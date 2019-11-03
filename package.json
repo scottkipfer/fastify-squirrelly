@@ -1,0 +1,28 @@
+{
+  "name": "fastify-nuts",
+  "version": "0.0.1",
+  "description": "Plugin for rendering Squirrelly templates",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scottkipfer/fastify-nuts.git"
+  },
+  "keywords": [
+    "fastify",
+    "squirrelly",
+    "templates",
+    "ssr",
+    "server",
+    "side",
+    "rendering"
+  ],
+  "author": "Scott Kipfer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/scottkipfer/fastify-nuts/issues"
+  },
+  "homepage": "https://github.com/scottkipfer/fastify-nuts#readme"
+}
