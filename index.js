@@ -10,7 +10,7 @@ function nuts(fastify, opts, next) {
   const templateDirectory =
     opts.templates || path.join(__dirname, "/templates");
   const partialsDirectory = opts.partials || path.join(__dirname, "/partials");
-  const helpersDirectory = opts.partials || path.join(__dirname, "/helpers");
+  const helpersDirectory = opts.helpers || path.join(__dirname, "/helpers");
 
   const getPage = page => `${templateDirectory}/${page}.html`;
 

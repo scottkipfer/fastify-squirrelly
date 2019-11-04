@@ -1,8 +1,12 @@
 const fastify = require('fastify')({logger:true});
-fastify.register(require('../index.js'));
+fastify.register(require('../index.js'), {
+  templates: __dirname + '/templates',
+  partials: __dirname + '/partials',
+  helpers: __dirname + '/helpers'
+});
 
 fastify.get('/', async (request, reply) => {
-  reply.nuts('hello-world', {name: 'World'});
+  reply.sqrly('hello-world', {name: 'World'});
 });
 
 const start = async () => {
