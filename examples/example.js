@@ -1,8 +1,8 @@
-const fastify = require('fastify')();
+const fastify = require('fastify')({logger:true});
 fastify.register(require('../index.js'));
 
 fastify.get('/', async (request, reply) => {
-  reply.nuts('example', {name: 'World'});
+  reply.nuts('hello-world', {name: 'World'});
 });
 
 const start = async () => {
