@@ -4,11 +4,10 @@ const path = require("path");
 const klaw = require("klaw-sync");
 const fs = require("fs");
 
-function nuts(fastify, opts, next) {
+function plugin(fastify, opts, next) {
   const decorator = opts.decorator || "sqrly";
   const charset = opts.charset || "utf-8";
-  const templateDirectory =
-    opts.templates || path.join(__dirname, "/templates");
+  const templateDirectory = opts.templates || path.join(__dirname, "/templates");
   const partialsDirectory = opts.partials || path.join(__dirname, "/partials");
   const helpersDirectory = opts.helpers || path.join(__dirname, "/helpers");
 
@@ -18,11 +17,7 @@ function nuts(fastify, opts, next) {
     const paths = klaw(dir, { nodir: true });
     paths.forEach(({ path }) => {
       const partial = fs.readFileSync(path);
-      const partialName = path
-        .split(dir)
-        .join("")
-        .replace(/\.[^/.]+$/, "")
-        .replace(/^\//g, "");
+      const partialName = path.split(dir).join("").replace(/\.[^/.]+$/, "").replace(/^\//g, "");
       sqrly.definePartial(partialName, partial);
     });
   }
@@ -31,11 +26,7 @@ function nuts(fastify, opts, next) {
     const paths = klaw(dir, { nodir: true });
     paths.forEach(({ path }) => {
       const helper = require(path);
-      const helperName = path
-        .split(dir)
-        .join("")
-        .replace(/\.[^/.]+$/, "")
-        .replace(/^\//g, "");
+      const helperName = path.split(dir).join("").replace(/\.[^/.]+$/, "").replace(/^\//g, "");
       sqrly.defineHelper(helperName, helper);
     });
   }
@@ -62,4 +53,4 @@ function nuts(fastify, opts, next) {
   next();
 }
 
-module.exports = fp(nuts, { fastify: "^2.x" });
+module.exports = fp(plugin, { fastify: "^2.x" });
