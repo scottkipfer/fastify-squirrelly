@@ -27,6 +27,11 @@
   "homepage": "https://github.com/scottkipfer/fastify-nuts#readme",
   "dependencies": {
     "fastify-plugin": "^1.6.0",
+    "klaw": "^3.0.0",
+    "klaw-sync": "^6.0.0",
     "squirrelly": "^7.7.0"
+  },
+  "devDependencies": {
+    "fastify": "^2.10.0"
   }
 }
