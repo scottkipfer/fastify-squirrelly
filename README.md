@@ -1,2 +1,2 @@
-# fastify-nuts
+# fastify-squirrelly
 Plugin for rendering Squirrelly Templates
