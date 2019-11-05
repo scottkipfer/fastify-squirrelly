@@ -7,7 +7,7 @@ fastify.register(require('../index.js'), {
 });
 
 fastify.get('/', async (request, reply) => {
-  reply.sqrly('hello-world', {name: 'World'});
+  reply.sqrly('hello-worlds', {name: 'World'});
 });
 
 const start = async () => {

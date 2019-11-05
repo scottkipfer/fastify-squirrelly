@@ -44,7 +44,7 @@ function plugin(fastify, opts, next) {
       this.send(view);
     } catch(e) {
       fastify.log.error(e);
-      throw new Error('Unable to render template. The template is either missing or invalid.');
+      this.send(new Error('Unable to render template. The template is either missing or invalid.'));
     }
   }
 
