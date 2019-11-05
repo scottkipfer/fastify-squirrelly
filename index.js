@@ -10,30 +10,25 @@ function plugin(fastify, opts, next) {
   const templateDirectory = opts.templates || path.join(__dirname, "/templates");
   const partialsDirectory = opts.partials || path.join(__dirname, "/partials");
   const helpersDirectory = opts.helpers || path.join(__dirname, "/helpers");
+  const filtersDirectory = opts.filters || path.join(__dirname, "/filters");
+  const nativeDirectory = opts.native || path.join(__dirname, "/native");
 
   const getPage = page => `${templateDirectory}/${page}.html`;
 
-  function importPartials(dir) {
-    const paths = klaw(dir, { nodir: true });
+  function _import(dir, sqrlyMethod, importMethod) {
+    const paths = fs.existsSync(dir) ? klaw(dir, { nodir: true }) : [];
     paths.forEach(({ path }) => {
-      const partial = fs.readFileSync(path);
-      const partialName = path.split(dir).join("").replace(/\.[^/.]+$/, "").replace(/^\//g, "");
-      sqrly.definePartial(partialName, partial);
-    });
-  }
-
-  function importHelpers(dir) {
-    const paths = klaw(dir, { nodir: true });
-    paths.forEach(({ path }) => {
-      const helper = require(path);
-      const helperName = path.split(dir).join("").replace(/\.[^/.]+$/, "").replace(/^\//g, "");
-      sqrly.defineHelper(helperName, helper);
+      const file = importMethod(path);
+      const importName = path.split(dir).join("").replace(/\.[^/.]+$/, "").replace(/^\//g, "");
+      sqrlyMethod(importName, file);
     });
   }
 
   try {
-    importPartials(partialsDirectory);
-    importHelpers(helpersDirectory);
+    _import(partialsDirectory, sqrly.definePartial, fs.readFileSync);
+    _import(helpersDirectory, sqrly.defineHelper, require);
+    _import(filtersDirectory, sqrly.defineFilter, require);
+    _import(nativeDirectory, sqrly.defineNativeHelper, require);
   } catch (e) {
     fastify.log.error(e);
     process.exit(1);
