@@ -3,7 +3,7 @@ fastify.register(require('../index.js'), {
   templates: __dirname + '/templates',
   partials: __dirname + '/partials',
   helpers: __dirname + '/helpers',
-  filters: __dirname + '/filters'
+  filters: __dirname + '/filters',
 });
 
 fastify.get('/', async (request, reply) => {

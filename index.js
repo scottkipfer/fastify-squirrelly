@@ -5,6 +5,7 @@ const klaw = require("klaw-sync");
 const fs = require("fs");
 
 function plugin(fastify, opts, next) {
+  const autoEscape = opts.autoEscape || false;
   const decorator = opts.decorator || "sqrly";
   const charset = opts.charset || "utf-8";
   const templateDirectory = opts.templates || path.join(__dirname, "/templates");
@@ -25,6 +26,7 @@ function plugin(fastify, opts, next) {
   }
 
   try {
+    sqrly.autoEscaping(autoEscape);
     _import(partialsDirectory, sqrly.definePartial, fs.readFileSync);
     _import(helpersDirectory, sqrly.defineHelper, require);
     _import(filtersDirectory, sqrly.defineFilter, require);
@@ -35,10 +37,15 @@ function plugin(fastify, opts, next) {
   }
 
   function renderer(path, data) {
-    const page = getPage(path);
-    const view = sqrly.renderFile(page, data);
-    this.header("Content-Type", `text/html; charset=${charset}`);
-    this.send(view);
+    try {
+      const page = getPage(path);
+      const view = sqrly.renderFile(page, data);
+      this.header("Content-Type", `text/html; charset=${charset}`);
+      this.send(view);
+    } catch(e) {
+      fastify.log.error(e);
+      throw new Error('Unable to render template. The template is either missing or invalid.');
+    }
   }
 
   fastify.decorateReply(decorator, function() {
