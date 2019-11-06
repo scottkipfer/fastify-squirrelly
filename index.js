@@ -12,7 +12,7 @@ function plugin(fastify, opts, next) {
   const partialsDirectory = opts.partials || path.join(__dirname, "/partials");
   const helpersDirectory = opts.helpers || path.join(__dirname, "/helpers");
   const filtersDirectory = opts.filters || path.join(__dirname, "/filters");
-  const nativeDirectory = opts.native || path.join(__dirname, "/native");
+  const nativeDirectory = opts.nativeHelpers || path.join(__dirname, "/nativeHepers");
 
   const getPage = page => `${templateDirectory}/${page}.html`;
 
