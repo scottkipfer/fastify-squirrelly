@@ -1,1 +1,0 @@
-module.exports = (args, content, blocks) => args.toUpperCase();
