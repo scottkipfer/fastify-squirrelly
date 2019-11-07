@@ -35,3 +35,4 @@ fastify.listen(3000, err => {
   - `helpers` - directory helpers are read from. default (__dirname, "/helpers")
   - `filters` - directory filters are read from. default (__dirname, "/filters")
   - `nativeHelpers` - directory nativeHelpers are read from. default (__dirname, "/nativeHelpers")
+  - `debug` - Allows you to see the template data as json. default `false`
