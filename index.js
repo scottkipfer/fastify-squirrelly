@@ -5,16 +5,16 @@ const klaw = require("klaw-sync");
 const fs = require("fs");
 
 function plugin(fastify, opts, next) {
+  const cwd = path.dirname(process.mainModule.filename);
+  const debug = opts.debug || false;
   const autoEscape = opts.autoEscape || false;
   const decorator = opts.decorator || "sqrly";
   const charset = opts.charset || "utf-8";
-  const templateDirectory = opts.templates || path.join(__dirname, "/templates");
-  const partialsDirectory = opts.partials || path.join(__dirname, "/partials");
-  const helpersDirectory = opts.helpers || path.join(__dirname, "/helpers");
-  const filtersDirectory = opts.filters || path.join(__dirname, "/filters");
-  const nativeDirectory = opts.nativeHelpers || path.join(__dirname, "/nativeHepers");
-
-  const getPage = page => `${templateDirectory}/${page}.html`;
+  const templateDirectory = opts.templates || path.join(cwd, "/templates");
+  const partialsDirectory = opts.partials || path.join(cwd, "/partials");
+  const helpersDirectory = opts.helpers || path.join(cwd, "/helpers");
+  const filtersDirectory = opts.filters || path.join(cwd, "/filters");
+  const nativeDirectory = opts.nativeHelpers || path.join(cwd, "/nativeHelpers");
 
   function _import(dir, sqrlyMethod, importMethod) {
     const paths = fs.existsSync(dir) ? klaw(dir, { nodir: true }) : [];
@@ -36,15 +36,22 @@ function plugin(fastify, opts, next) {
     process.exit(1);
   }
 
+  const getPage = page => `${templateDirectory}/${page}.html`;
+
   function renderer(path, data) {
-    try {
-      const page = getPage(path);
-      const view = sqrly.renderFile(page, data);
-      this.header("Content-Type", `text/html; charset=${charset}`);
-      this.send(view);
-    } catch(e) {
-      fastify.log.error(e);
-      this.send(new Error('Unable to render template. The template is either missing or invalid.'));
+    const json = this.request.query.json;
+    if (json && debug) {
+      this.send(data);
+    } else {
+      try {
+        const page = getPage(path);
+        const view = sqrly.renderFile(page, data);
+        this.header("Content-Type", `text/html; charset=${charset}`);
+        this.send(view);
+      } catch(e) {
+        fastify.log.error(e);
+        this.send(new Error('Unable to render template. The template is either missing or invalid.'));
+      }
     }
   }
 
