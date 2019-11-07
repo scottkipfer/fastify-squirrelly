@@ -1,4 +1,5 @@
 [![npm version](https://badge.fury.io/js/fastify-squirrelly.svg)](https://badge.fury.io/js/fastify-squirrelly)
+[![Build Status](https://travis-ci.org/scottkipfer/fastify-squirrelly.svg?branch=master)](https://travis-ci.org/scottkipfer/fastify-squirrelly)
 
 # fastify-squirrelly
 Plugin for rendering Squirrelly Templates
