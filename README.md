@@ -79,9 +79,13 @@ fastify.listen(3000, err => {
 create a folder called templates in the same directory as the server file.
 Then create a file named hello.html in that folder.
 
-|-- templates
-    |-- hello.html
-|-- server.js
+```
+.
++-- server.js
++-- templates
+|   +-- hello.html
+```
+
 
 ```html
 <!-- hello.html -->
