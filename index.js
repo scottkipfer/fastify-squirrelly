@@ -41,11 +41,11 @@ function plugin(fastify, opts, next) {
   function renderer(path, data) {
     const json = this.request.query.json;
     if (json && debug) {
-      this.send(data);
+      this.send({data: data, locals: this.locals});
     } else {
       try {
         const page = getPage(path);
-        const view = sqrly.renderFile(page, data);
+        const view = sqrly.renderFile(page, {...this.locals, ...data});
         this.header("Content-Type", `text/html; charset=${charset}`);
         this.send(view);
       } catch(e) {
@@ -55,6 +55,7 @@ function plugin(fastify, opts, next) {
     }
   }
 
+  fastify.decorateReply('locals', {});
   fastify.decorateReply(decorator, function() {
     renderer.apply(this, arguments);
   });

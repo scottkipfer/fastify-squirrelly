@@ -100,7 +100,70 @@ test('Debug and a query parameter of json=1 will send back the data as JSON', t 
       url: 'http://localhost:' + fastify.server.address().port + '?json=1'
     }, (err, response, body) => {
       t.strictEqual(response.statusCode, 200);
-      t.deepEqual(JSON.parse(body), {"name": "World"});
+      t.deepEqual(JSON.parse(body), {data: {"name": "World"}, locals: {}});
+      fastify.close();
+    });
+  });
+});
+
+test('Everything on locals is available for the template', t => {
+  t.plan(3)
+  const fastify = Fastify();
+  fastify.register(require('../index'),{debug: true});
+  fastify.get('/', (req, reply) => {
+    reply.locals.name = 'TEST'
+    reply.sqrly('hello');
+  });
+  fastify.listen(0, err => {
+    t.error(err);
+    sget({
+      method: 'GET',
+      url: 'http://localhost:' + fastify.server.address().port
+    }, (err, response, body) => {
+      t.strictEqual(response.statusCode, 200);
+      t.strictEqual(body.toString(), `<h1>Hello, TEST!</h1>`);
+      fastify.close();
+    });
+  });
+});
+
+test('Everything on locals is available when using debug', t => {
+  t.plan(3)
+  const fastify = Fastify();
+  fastify.register(require('../index'),{debug: true});
+  fastify.get('/', (req, reply) => {
+    reply.locals.test = 'a test'
+    reply.sqrly('nested/hello', {name: 'World'});
+  });
+  fastify.listen(0, err => {
+    t.error(err);
+    sget({
+      method: 'GET',
+      url: 'http://localhost:' + fastify.server.address().port + '?json=1'
+    }, (err, response, body) => {
+      t.strictEqual(response.statusCode, 200);
+      t.deepEqual(JSON.parse(body), {data: {"name": "World"}, locals: {test: 'a test'}});
+      fastify.close();
+    });
+  });
+});
+
+test('data passed in will override the data passed in as locals', t => {
+  t.plan(3)
+  const fastify = Fastify();
+  fastify.register(require('../index'),{debug: true});
+  fastify.get('/', (req, reply) => {
+    reply.locals.name = 'TEST'
+    reply.sqrly('hello', {name: 'World'});
+  });
+  fastify.listen(0, err => {
+    t.error(err);
+    sget({
+      method: 'GET',
+      url: 'http://localhost:' + fastify.server.address().port
+    }, (err, response, body) => {
+      t.strictEqual(response.statusCode, 200);
+      t.strictEqual(body.toString(), `<h1>Hello, World!</h1>`);
       fastify.close();
     });
   });
