@@ -39,6 +39,7 @@ function plugin(fastify, opts, next) {
   const getPage = page => `${templateDirectory}/${page}.html`;
 
   function renderer(path, data) {
+    console.log(debug);
     const json = this.request.query.json;
     if (json && debug) {
       this.send({data: data, locals: this.locals});
@@ -50,7 +51,7 @@ function plugin(fastify, opts, next) {
         this.send(view);
       } catch(e) {
         fastify.log.error(e);
-        this.send(new Error('Unable to render template. The template is either missing or invalid.'));
+        this.send(new Error('Unable to render template. The template is either missing or invalid. ' + (debug ? e.stack : e)));
       }
     }
   }
