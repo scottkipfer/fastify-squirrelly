@@ -39,7 +39,6 @@ function plugin(fastify, opts, next) {
   const getPage = page => `${templateDirectory}/${page}.html`;
 
   function renderer(path, data) {
-    console.log(debug);
     const json = this.request.query.json;
     if (json && debug) {
       this.send({data: data, locals: this.locals});
