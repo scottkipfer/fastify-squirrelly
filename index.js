@@ -55,7 +55,12 @@ function plugin(fastify, opts, next) {
     }
   }
 
-  fastify.decorateReply('locals', {});
+  function locals(req, reply, done) {
+    reply.locals = {};
+    done();
+  }
+
+  fastify.addHook('preHandler', locals);
   fastify.decorateReply(decorator, function() {
     renderer.apply(this, arguments);
   });
