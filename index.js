@@ -60,7 +60,7 @@ function plugin(fastify, opts, next) {
     done();
   }
 
-  fastify.addHook('preHandler', locals);
+  fastify.addHook('onRequest', locals);
   fastify.decorateReply(decorator, function() {
     renderer.apply(this, arguments);
   });
