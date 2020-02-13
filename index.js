@@ -10,11 +10,11 @@ function plugin(fastify, opts, next) {
   const autoEscape = opts.autoEscape || false;
   const decorator = opts.decorator || "sqrly";
   const charset = opts.charset || "utf-8";
-  const templateDirectory = opts.templates || path.join(cwd, "/templates");
-  const partialsDirectory = opts.partials || path.join(cwd, "/partials");
-  const helpersDirectory = opts.helpers || path.join(cwd, "/helpers");
-  const filtersDirectory = opts.filters || path.join(cwd, "/filters");
-  const nativeDirectory = opts.nativeHelpers || path.join(cwd, "/nativeHelpers");
+  const templateDirectory = opts.templates || path.join(cwd, "templates");
+  const partialsDirectory = opts.partials || path.join(cwd, "partials");
+  const helpersDirectory = opts.helpers || path.join(cwd, "helpers");
+  const filtersDirectory = opts.filters || path.join(cwd, "filters");
+  const nativeDirectory = opts.nativeHelpers || path.join(cwd, "nativeHelpers");
 
   function _import(dir, sqrlyMethod, importMethod) {
     const paths = fs.existsSync(dir) ? klaw(dir, { nodir: true }) : [];
@@ -37,18 +37,17 @@ function plugin(fastify, opts, next) {
   }
 
   const getPage = page => `${templateDirectory}/${page}`;
-  const isAbsolute = path => path.startsWith('/');
 
   // Ends with .ext (but doesn't start with . (e.g. a hidden file)
   const hasExt = path => /^[^.]+\.[a-zA-Z0-9-]+$/.test(path);
 
-  function renderer(path, data) {
+  function renderer(template, data) {
     const json = this.request.query.json;
     if (json && debug) {
       this.send({data: data, locals: this.locals});
     } else {
       try {
-        let page = isAbsolute(path) ? path : getPage(path);
+        let page = path.isAbsolute(template) ? template : getPage(template);
         if (!hasExt(page)) page = `${ page }.html`;
 
         const view = sqrly.renderFile(page, {...this.locals, ...data});
