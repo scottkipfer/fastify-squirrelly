@@ -36,7 +36,11 @@ function plugin(fastify, opts, next) {
     process.exit(1);
   }
 
-  const getPage = page => `${templateDirectory}/${page}.html`;
+  const getPage = page => `${templateDirectory}/${page}`;
+  const isAbsolute = path => path.startsWith('/');
+
+  // Ends with .ext (but doesn't start with . (e.g. a hidden file)
+  const hasExt = path => /^[^.]+\.[a-zA-Z0-9-]+$/.test(path);
 
   function renderer(path, data) {
     const json = this.request.query.json;
@@ -44,7 +48,9 @@ function plugin(fastify, opts, next) {
       this.send({data: data, locals: this.locals});
     } else {
       try {
-        const page = getPage(path);
+        let page = isAbsolute(path) ? path : getPage(path);
+        if (!hasExt(page)) page = `${ page }.html`;
+
         const view = sqrly.renderFile(page, {...this.locals, ...data});
         this.header("Content-Type", `text/html; charset=${charset}`);
         this.send(view);
