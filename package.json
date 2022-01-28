@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "fastify": "^2.10.0",
-    "simple-get": "^3.1.0",
+    "simple-get": "^4.0.1",
     "tap": "^14.9.1"
   }
 }
